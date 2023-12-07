@@ -2,7 +2,9 @@
 Functions used by the Arena class to get game data
 """
 
+from datetime import datetime
 from difflib import SequenceMatcher
+import os
 import threading
 from PIL import ImageGrab
 import numpy as np
@@ -134,8 +136,15 @@ def valid_item(item: str) -> str | None:
 def get_items() -> list:
     """Returns a list of items currently on the board"""
     item_bench: list = []
+    save_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "debug_pic")
+    if not os.path.exists(save_directory):
+        os.makedirs(save_directory)
     for positions in screen_coords.ITEM_POS:
         mk_functions.move_mouse(positions[0].get_coords())
+        screenshot = ImageGrab.grab()
+        current_time = datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
+        save_path = os.path.join(save_directory, f"screenshot_{current_time}.png")
+        screenshot.save(save_path)
         item: str = ocr.get_text(
             screenxy=positions[1].get_coords(),
             scale=3,
