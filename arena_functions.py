@@ -143,8 +143,6 @@ def get_items() -> list:
         mk_functions.move_mouse(positions[0].get_coords())
         screenshot = ImageGrab.grab()
         current_time = datetime.now().strftime("%Y%m%d%H%M%S%f")[:-3]
-        save_path = os.path.join(save_directory, f"screenshot_{current_time}.png")
-        screenshot.save(save_path)
         item: str = ocr.get_text(
             screenxy=positions[1].get_coords(),
             scale=3,
@@ -152,6 +150,8 @@ def get_items() -> list:
             whitelist=ocr.ALPHABET_WHITELIST,
         )
         item_bench.append(valid_item(item))
+        save_path = os.path.join(save_directory, f"screenshot_{current_time}_{item}.png")
+        screenshot.save(save_path)
     mk_functions.move_mouse(screen_coords.DEFAULT_LOC.get_coords())
     return item_bench
 
