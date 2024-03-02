@@ -356,7 +356,7 @@ class Arena:
                 print("  Rerolling shop")
             shop: list = arena_functions.get_shop()
             print(f"  Shop: {shop}")
-            for champion in shop:
+            for champion in reversed(shop):
                 if (
                     self.champs_to_buy.get(champion[1], -1) >= 0
                     and arena_functions.get_gold()
@@ -468,13 +468,17 @@ class Arena:
         )
 
         for augment in augments:
-            if augment in comps.AVOID_AUGMENTS:
+            found = False
+            for potential in comps.AVOID_AUGMENTS:
+                if potential in augment:
+                    found = True
+                    break
+            if not found:
                 mk_functions.left_click(
                     screen_coords.AUGMENT_LOC[augments.index(augment)].get_coords()
                 )
-                break
-        else:
-            mk_functions.left_click(screen_coords.AUGMENT_LOC[0].get_coords())
+                return
+        mk_functions.left_click(screen_coords.AUGMENT_LOC[0].get_coords())
 
     def check_health(self) -> None:
         """Checks if current health is below 30 and conditionally activates spam roll"""
